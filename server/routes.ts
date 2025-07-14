@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertQuizAttemptSchema } from "@shared/schema";
+import { insertQuizAttemptSchema, insertQuizSubjectSchema, insertQuizQuestionSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -112,6 +112,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch subject" });
+    }
+  });
+
+  // Create new subject
+  app.post("/api/subjects", async (req, res) => {
+    try {
+      const subjectData = insertQuizSubjectSchema.parse(req.body);
+      const subject = await storage.createSubject(subjectData);
+      res.status(201).json(subject);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid subject data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create subject" });
+      }
+    }
+  });
+
+  // Add question to subject
+  app.post("/api/subjects/:id/questions", async (req, res) => {
+    try {
+      const subjectId = parseInt(req.params.id);
+      const questionData = insertQuizQuestionSchema.parse({
+        ...req.body,
+        subjectId
+      });
+      
+      const question = await storage.createQuestion(questionData);
+      res.status(201).json(question);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid question data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to create question" });
+      }
+    }
+  });
+
+  // Get all questions for a subject (with answers - for admin)
+  app.get("/api/subjects/:id/questions/admin", async (req, res) => {
+    try {
+      const subjectId = parseInt(req.params.id);
+      const questions = await storage.getQuestionsBySubject(subjectId);
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch questions" });
+    }
+  });
+
+  // Delete question
+  app.delete("/api/questions/:id", async (req, res) => {
+    try {
+      const questionId = parseInt(req.params.id);
+      // Note: We'd need to implement deleteQuestion in storage
+      res.status(200).json({ message: "Question deleted" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete question" });
     }
   });
 

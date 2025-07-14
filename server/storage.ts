@@ -1,4 +1,6 @@
 import { users, quizSubjects, quizQuestions, quizAttempts, type User, type InsertUser, type QuizSubject, type QuizQuestion, type QuizAttempt, type InsertQuizSubject, type InsertQuizQuestion, type InsertQuizAttempt } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -186,4 +188,80 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllSubjects(): Promise<QuizSubject[]> {
+    return await db.select().from(quizSubjects);
+  }
+
+  async getSubject(id: number): Promise<QuizSubject | undefined> {
+    const [subject] = await db.select().from(quizSubjects).where(eq(quizSubjects.id, id));
+    return subject || undefined;
+  }
+
+  async createSubject(insertSubject: InsertQuizSubject): Promise<QuizSubject> {
+    const [subject] = await db
+      .insert(quizSubjects)
+      .values(insertSubject)
+      .returning();
+    return subject;
+  }
+
+  async getQuestionsBySubject(subjectId: number): Promise<QuizQuestion[]> {
+    return await db.select().from(quizQuestions).where(eq(quizQuestions.subjectId, subjectId));
+  }
+
+  async getQuestion(id: number): Promise<QuizQuestion | undefined> {
+    const [question] = await db.select().from(quizQuestions).where(eq(quizQuestions.id, id));
+    return question || undefined;
+  }
+
+  async createQuestion(insertQuestion: InsertQuizQuestion): Promise<QuizQuestion> {
+    const [question] = await db
+      .insert(quizQuestions)
+      .values(insertQuestion)
+      .returning();
+    return question;
+  }
+
+  async getAttemptsBySubject(subjectId: number, userId?: number): Promise<QuizAttempt[]> {
+    if (userId) {
+      return await db.select().from(quizAttempts)
+        .where(and(eq(quizAttempts.subjectId, subjectId), eq(quizAttempts.userId, userId)));
+    }
+    return await db.select().from(quizAttempts).where(eq(quizAttempts.subjectId, subjectId));
+  }
+
+  async getBestScore(subjectId: number, userId?: number): Promise<number> {
+    const attempts = await this.getAttemptsBySubject(subjectId, userId);
+    if (attempts.length === 0) return 0;
+    return Math.max(...attempts.map(a => a.score));
+  }
+
+  async createAttempt(insertAttempt: InsertQuizAttempt): Promise<QuizAttempt> {
+    const [attempt] = await db
+      .insert(quizAttempts)
+      .values(insertAttempt)
+      .returning();
+    return attempt;
+  }
+}
+
+export const storage = new DatabaseStorage();

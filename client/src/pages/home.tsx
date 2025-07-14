@@ -76,6 +76,15 @@ export default function Home() {
       <div className="max-w-4xl mx-auto">
         <AppHeader />
         
+        <div className="flex justify-center mb-6">
+          <button
+            onClick={() => navigate('/admin')}
+            className="px-6 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/20"
+          >
+            ⚙️ Admin Panel
+          </button>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {subjects?.map((subject) => (
             <SubjectCard
