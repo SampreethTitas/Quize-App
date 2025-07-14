@@ -150,7 +150,13 @@ export class MemStorage implements IStorage {
 
   async createQuestion(insertQuestion: InsertQuizQuestion): Promise<QuizQuestion> {
     const id = this.currentQuestionId++;
-    const question: QuizQuestion = { ...insertQuestion, id, createdAt: new Date() };
+    const question: QuizQuestion = { 
+      ...insertQuestion, 
+      id, 
+      createdAt: new Date(),
+      explanation: insertQuestion.explanation || null,
+      difficulty: insertQuestion.difficulty || "medium"
+    };
     this.questions.set(id, question);
     return question;
   }
@@ -169,7 +175,12 @@ export class MemStorage implements IStorage {
 
   async createAttempt(insertAttempt: InsertQuizAttempt): Promise<QuizAttempt> {
     const id = this.currentAttemptId++;
-    const attempt: QuizAttempt = { ...insertAttempt, id, completedAt: new Date() };
+    const attempt: QuizAttempt = { 
+      ...insertAttempt, 
+      id, 
+      completedAt: new Date(),
+      userId: insertAttempt.userId || null
+    };
     this.attempts.set(id, attempt);
     return attempt;
   }
