@@ -21,8 +21,7 @@ Preferred communication style: Simple, everyday language.
 ### Backend Architecture
 - **Runtime**: Node.js with Express.js
 - **Language**: TypeScript with ES modules
-- **Database**: PostgreSQL with Drizzle ORM
-- **Database Provider**: Neon Database (serverless PostgreSQL)
+- **Storage**: In-memory storage with static quiz data
 - **Development Server**: Vite middleware integration with Express
 
 ### Build and Development
@@ -33,11 +32,11 @@ Preferred communication style: Simple, everyday language.
 
 ## Key Components
 
-### Database Schema
-- **users**: User authentication and management
-- **quiz_subjects**: Quiz categories (JavaScript, React, Node.js, etc.)
-- **quiz_questions**: Individual questions with multiple choice options
-- **quiz_attempts**: User quiz attempt tracking and scoring
+### Data Structure
+- **Static Quiz Data**: 60 comprehensive questions across 6 subjects
+- **In-Memory Storage**: Fast access to quiz subjects, questions, and user attempts
+- **Subject Categories**: JavaScript, React, Node.js, Algorithms, System Design, Databases
+- **Question Types**: Multiple choice with explanations and difficulty levels
 
 ### Core Features
 - **Offline Storage**: IndexedDB implementation for caching subjects and questions
