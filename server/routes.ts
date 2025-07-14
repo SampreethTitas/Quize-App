@@ -1,0 +1,120 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { insertQuizAttemptSchema } from "@shared/schema";
+import { z } from "zod";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Get all quiz subjects
+  app.get("/api/subjects", async (req, res) => {
+    try {
+      const subjects = await storage.getAllSubjects();
+      
+      // Add question count and best score for each subject
+      const subjectsWithStats = await Promise.all(
+        subjects.map(async (subject) => {
+          const questions = await storage.getQuestionsBySubject(subject.id);
+          const bestScore = await storage.getBestScore(subject.id);
+          return {
+            ...subject,
+            questionCount: questions.length,
+            bestScore: bestScore || 0
+          };
+        })
+      );
+      
+      res.json(subjectsWithStats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch subjects" });
+    }
+  });
+
+  // Get questions for a specific subject
+  app.get("/api/subjects/:id/questions", async (req, res) => {
+    try {
+      const subjectId = parseInt(req.params.id);
+      const questions = await storage.getQuestionsBySubject(subjectId);
+      
+      // Remove correct answers from response for security
+      const questionsWithoutAnswers = questions.map(q => ({
+        id: q.id,
+        question: q.question,
+        options: q.options,
+        difficulty: q.difficulty
+      }));
+      
+      res.json(questionsWithoutAnswers);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch questions" });
+    }
+  });
+
+  // Submit quiz attempt
+  app.post("/api/attempts", async (req, res) => {
+    try {
+      const attemptData = insertQuizAttemptSchema.parse(req.body);
+      const attempt = await storage.createAttempt(attemptData);
+      res.json(attempt);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        res.status(400).json({ message: "Invalid attempt data", errors: error.errors });
+      } else {
+        res.status(500).json({ message: "Failed to save attempt" });
+      }
+    }
+  });
+
+  // Check answers and return results
+  app.post("/api/subjects/:id/check", async (req, res) => {
+    try {
+      const subjectId = parseInt(req.params.id);
+      const { answers } = req.body;
+      
+      const questions = await storage.getQuestionsBySubject(subjectId);
+      const results = questions.map((question, index) => ({
+        questionId: question.id,
+        correct: answers[index] === question.correctAnswer,
+        correctAnswer: question.correctAnswer,
+        explanation: question.explanation
+      }));
+      
+      const correctCount = results.filter(r => r.correct).length;
+      const score = Math.round((correctCount / questions.length) * 100);
+      
+      res.json({
+        results,
+        score,
+        correctCount,
+        totalQuestions: questions.length
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check answers" });
+    }
+  });
+
+  // Get subject details
+  app.get("/api/subjects/:id", async (req, res) => {
+    try {
+      const subjectId = parseInt(req.params.id);
+      const subject = await storage.getSubject(subjectId);
+      
+      if (!subject) {
+        return res.status(404).json({ message: "Subject not found" });
+      }
+      
+      const questions = await storage.getQuestionsBySubject(subjectId);
+      const bestScore = await storage.getBestScore(subjectId);
+      
+      res.json({
+        ...subject,
+        questionCount: questions.length,
+        bestScore: bestScore || 0
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch subject" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}
