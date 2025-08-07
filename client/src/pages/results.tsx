@@ -20,13 +20,17 @@ export default function Results() {
   });
 
   useEffect(() => {
-    // Get results from navigation state or localStorage
+    // Try to get results from navigation state or localStorage
     const state = history.state?.state;
     if (state) {
       setResults(state);
     } else {
-      // Fallback to localStorage or redirect to home
-      navigate('/');
+      const stored = localStorage.getItem('latestResults');
+      if (stored) {
+        setResults(JSON.parse(stored));
+      } else {
+        navigate('/');
+      }
     }
   }, [navigate]);
 

@@ -29,11 +29,7 @@ export function AddQuestionForm({ subjectId, subjectName, onClose }: AddQuestion
 
   const createQuestionMutation = useMutation({
     mutationFn: (data: typeof formData) =>
-      apiRequest(`/api/subjects/${subjectId}/questions`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-      }),
+      apiRequest("POST", `/api/subjects/${subjectId}/questions`, data),
     onSuccess: () => {
       toast({
         title: "Success",
@@ -43,10 +39,10 @@ export function AddQuestionForm({ subjectId, subjectName, onClose }: AddQuestion
       queryClient.invalidateQueries({ queryKey: ["/api/subjects"] });
       onClose();
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: "Error",
-        description: "Failed to add question",
+        description: error?.message || "Failed to add question",
         variant: "destructive"
       });
     }

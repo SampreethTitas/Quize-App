@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { QuizQuestion } from "@/types/quiz";
@@ -19,12 +19,15 @@ export default function Quiz() {
     return match ? parseInt(match[1]) : 1;
   });
 
+  const queryClient = useQueryClient();
+
   const { data: questions, isLoading } = useQuery({
     queryKey: ['/api/subjects', subjectId, 'questions'],
     queryFn: async () => {
       try {
         const response = await fetch(`/api/subjects/${subjectId}/questions`);
         if (!response.ok) {
+          console.error('Failed to fetch questions:', response.statusText);
           throw new Error('Failed to fetch questions');
         }
         const data = await response.json();
@@ -70,25 +73,26 @@ export default function Quiz() {
       if (response.ok) {
         const results = await response.json();
         completeQuiz();
-        navigate(`/results/${subjectId}`, { 
-          state: { 
-            ...results, 
-            timeSpent: Math.floor((Date.now() - state.startTime) / 1000),
-            answers: state.answers
-          } 
-        });
+        const resultState = {
+          ...results,
+          timeSpent: Math.floor((Date.now() - state.startTime) / 1000),
+          answers: state.answers
+        };
+        localStorage.setItem('latestResults', JSON.stringify(resultState));
+        queryClient.invalidateQueries({ queryKey: ['/api/subjects'] }); // <-- fix here
+        navigate(`/results/${subjectId}`);
       }
     } catch (error) {
       console.error('Failed to submit quiz:', error);
       // Fallback to client-side checking
       completeQuiz();
-      navigate(`/results/${subjectId}`, { 
-        state: { 
-          score: 0, 
-          timeSpent: Math.floor((Date.now() - state.startTime) / 1000),
-          answers: state.answers 
-        } 
-      });
+      const resultState = {
+        score: 0,
+        timeSpent: Math.floor((Date.now() - state.startTime) / 1000),
+        answers: state.answers
+      };
+      localStorage.setItem('latestResults', JSON.stringify(resultState));
+      navigate(`/results/${subjectId}`);
     }
   };
 

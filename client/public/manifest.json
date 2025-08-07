@@ -11,21 +11,44 @@
   "icons": [
     {
       "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Ctext y='0.9em' font-size='180'%3E🎯%3C/text%3E%3C/svg%3E",
-      "sizes": "192x192",
+      "sizes": "150x150",
       "type": "image/svg+xml"
     },
     {
       "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Ctext y='0.9em' font-size='480'%3E🎯%3C/text%3E%3C/svg%3E",
-      "sizes": "512x512",
+      "sizes": "150x150",
       "type": "image/svg+xml"
     }
   ],
   "screenshots": [
+    
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1280 720'%3E%3Crect width='1280' height='720' fill='%23667eea'/%3E%3Ctext x='640' y='360' font-size='48' text-anchor='middle' fill='white'%3EPrepQuiz Pro%3C/text%3E%3C/svg%3E",
-      "sizes": "1280x720",
+      "src": "/assets/img1.jpeg",
+      "sizes": "3418x1974",
       "type": "image/svg+xml",
-      "form_factor": "wide"
+      "form_factor": "wide",
+      "orientation": "landscape"
+    },
+    {
+      "src": "/assets/img2.jpeg",
+      "sizes": "3420x1970",
+      "type": "image/svg+xml",
+      "form_factor": "wide",
+      "orientation": "landscape"
+    },
+    {
+      "src": "/assets/img3.jpeg",
+      "sizes": "998x1754",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "orientation": "portrait"
+    },
+    {
+      "src": "/assets/img4.jpeg",
+      "sizes": "1000x1756",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "orientation": "portrait"
     }
   ],
   "related_applications": [],

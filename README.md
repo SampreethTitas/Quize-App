@@ -145,3 +145,121 @@ The app is optimized for mobile devices:
 ---
 
 Ready to start coding interviews preparation! 🎯
+```
+ProgressivePocketTool
+├─ .env
+├─ .replit
+├─ attached_assets
+│  ├─ image_1752521109821.png
+│  └─ Pasted--DOCTYPE-html-html-lang-en-head-meta-charset-UTF-8-meta-name-viewport-con-1752519481650_1752519481651.txt
+├─ client
+│  ├─ index.html
+│  ├─ public
+│  │  ├─ manifest.json
+│  │  └─ sw.js
+│  └─ src
+│     ├─ App.tsx
+│     ├─ components
+│     │  ├─ quiz
+│     │  │  ├─ add-question-form.tsx
+│     │  │  ├─ add-subject-form.tsx
+│     │  │  ├─ app-header.tsx
+│     │  │  ├─ install-prompt.tsx
+│     │  │  ├─ offline-indicator.tsx
+│     │  │  ├─ option-button.tsx
+│     │  │  ├─ progress-bar.tsx
+│     │  │  ├─ question-display.tsx
+│     │  │  └─ subject-card.tsx
+│     │  └─ ui
+│     │     ├─ accordion.tsx
+│     │     ├─ alert-dialog.tsx
+│     │     ├─ alert.tsx
+│     │     ├─ aspect-ratio.tsx
+│     │     ├─ avatar.tsx
+│     │     ├─ badge.tsx
+│     │     ├─ breadcrumb.tsx
+│     │     ├─ button.tsx
+│     │     ├─ calendar.tsx
+│     │     ├─ card.tsx
+│     │     ├─ carousel.tsx
+│     │     ├─ chart.tsx
+│     │     ├─ checkbox.tsx
+│     │     ├─ collapsible.tsx
+│     │     ├─ command.tsx
+│     │     ├─ context-menu.tsx
+│     │     ├─ dialog.tsx
+│     │     ├─ drawer.tsx
+│     │     ├─ dropdown-menu.tsx
+│     │     ├─ form.tsx
+│     │     ├─ hover-card.tsx
+│     │     ├─ input-otp.tsx
+│     │     ├─ input.tsx
+│     │     ├─ label.tsx
+│     │     ├─ menubar.tsx
+│     │     ├─ navigation-menu.tsx
+│     │     ├─ pagination.tsx
+│     │     ├─ popover.tsx
+│     │     ├─ progress.tsx
+│     │     ├─ radio-group.tsx
+│     │     ├─ resizable.tsx
+│     │     ├─ scroll-area.tsx
+│     │     ├─ select.tsx
+│     │     ├─ separator.tsx
+│     │     ├─ sheet.tsx
+│     │     ├─ sidebar.tsx
+│     │     ├─ skeleton.tsx
+│     │     ├─ slider.tsx
+│     │     ├─ switch.tsx
+│     │     ├─ table.tsx
+│     │     ├─ tabs.tsx
+│     │     ├─ textarea.tsx
+│     │     ├─ toast.tsx
+│     │     ├─ toaster.tsx
+│     │     ├─ toggle-group.tsx
+│     │     ├─ toggle.tsx
+│     │     └─ tooltip.tsx
+│     ├─ hooks
+│     │  ├─ use-mobile.tsx
+│     │  ├─ use-offline-storage.ts
+│     │  ├─ use-pwa.ts
+│     │  ├─ use-quiz-state.ts
+│     │  └─ use-toast.ts
+│     ├─ index.css
+│     ├─ lib
+│     │  ├─ offline-storage.ts
+│     │  ├─ queryClient.ts
+│     │  ├─ quiz-data.ts
+│     │  └─ utils.ts
+│     ├─ main.tsx
+│     ├─ pages
+│     │  ├─ admin.tsx
+│     │  ├─ home.tsx
+│     │  ├─ not-found.tsx
+│     │  ├─ quiz.tsx
+│     │  └─ results.tsx
+│     └─ types
+│        └─ quiz.ts
+├─ components.json
+├─ drizzle.config.ts
+├─ LOCAL_SETUP.md
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.js
+├─ README.md
+├─ replit.md
+├─ server
+│  ├─ .env
+│  ├─ db.ts
+│  ├─ index.ts
+│  ├─ routes.ts
+│  ├─ seeds.ts
+│  ├─ storage.ts
+│  └─ vite.ts
+├─ shared
+│  └─ schema.ts
+├─ tailwind.config.ts
+├─ test.ts
+├─ tsconfig.json
+└─ vite.config.ts
+
+```

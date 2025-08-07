@@ -68,19 +68,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/subjects/:id/check", async (req, res) => {
     try {
       const subjectId = parseInt(req.params.id);
-      const { answers } = req.body;
-      
+      const { answers, timeSpent = 0 } = req.body;
+
+      console.log("subjectId:", subjectId);
+      console.log("answers:", answers);
+
       const questions = await storage.getQuestionsBySubject(subjectId);
+      console.log("questions:", questions);
+
+      if (!Array.isArray(answers)) {
+        return res.status(400).json({ message: "Answers must be an array" });
+      }
+      if (!questions || questions.length === 0) {
+        return res.status(404).json({ message: "No questions found for subject" });
+      }
+
       const results = questions.map((question, index) => ({
         questionId: question.id,
         correct: answers[index] === question.correctAnswer,
         correctAnswer: question.correctAnswer,
         explanation: question.explanation
       }));
-      
+
       const correctCount = results.filter(r => r.correct).length;
       const score = Math.round((correctCount / questions.length) * 100);
-      
+
+      // Save the attempt
+      const attemptData = {
+        subjectId,
+        score,
+        totalQuestions: questions.length,
+        correctAnswers: correctCount,
+        timeSpent,
+        answers
+      };
+      console.log("attemptData:", attemptData);
+
+      await storage.createAttempt(attemptData);
+
       res.json({
         results,
         score,
@@ -88,6 +113,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalQuestions: questions.length
       });
     } catch (error) {
+      console.error("Error in /api/subjects/:id/check:", error);
       res.status(500).json({ message: "Failed to check answers" });
     }
   });

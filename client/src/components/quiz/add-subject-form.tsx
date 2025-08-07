@@ -24,24 +24,20 @@ export function AddSubjectForm({ onClose }: AddSubjectFormProps) {
   const queryClient = useQueryClient();
 
   const createSubjectMutation = useMutation({
-    mutationFn: (data: typeof formData) => 
-      apiRequest("/api/subjects", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
-      }),
+    mutationFn: (data: typeof formData) =>
+      apiRequest("POST", "/api/subjects", data),
     onSuccess: () => {
       toast({
         title: "Success",
         description: "Quiz subject created successfully!"
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/subjects"] });
+      queryClient.invalidateQueries({ queryKey: ['/api/subjects'] });
       onClose();
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
         title: "Error",
-        description: "Failed to create quiz subject",
+        description: error?.message || "Failed to create quiz subject",
         variant: "destructive"
       });
     }
